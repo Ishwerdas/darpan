@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jun 20, 2014 at 11:20 AM
+-- Generation Time: Jun 20, 2014 at 05:49 PM
 -- Server version: 5.5.34-0ubuntu0.13.04.1
 -- PHP Version: 5.4.9-4ubuntu2.4
 
@@ -38,9 +38,11 @@ CREATE TABLE IF NOT EXISTS `dresses` (
 
 INSERT INTO `dresses` (`id`, `dress_name`, `dress_category`) VALUES
 (1, 'dress1', '1'),
-(3, 'dress2', '3'),
-(2, 'dress3', '2'),
-(4, 'dress4', '4');
+(3, 'dress2', '2'),
+(2, 'dress3', '1'),
+(4, 'dress4', '2'),
+(3, 'dress5', '3'),
+(4, 'dress6', '4');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
