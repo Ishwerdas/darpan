@@ -1,10 +1,15 @@
+<?php
+  include 'db_connect.php';
+  $addr = $_POST['image_name'];
+  
+?>
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="UTF-8" />
     <link rel="stylesheet" type="text/css" href="tabs.css" />
     <link rel="stylesheet" type="text/css" href="heading.css" />
-    
+    <script src="fabric.min.js"></script>
     <script type="text/javascript">
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-7243260-2']);
@@ -18,14 +23,34 @@
         s.parentNode.insertBefore(ga, s);
       }
       )();
-      
-    </script>
-    
-    
-    
+   </script>
+   <style>
+  .controls { display: inline-block; background: #fafafa; margin-left: 10px; padding: 15px; border-left: 1px dotted #aaa; height: 270px }
+  .canvas-container { display: inline-block; vertical-align: top; }
+  canvas { border: 1px solid #eee !important }
+  label span { width: 50px; display: inline-block }
+  *[type=range] { position: relative; top: 4px }
+  p:first-child { margin-top: 0 }
+  p:last-child { margin-bottom: 0 }
+</style>
   </head>
   
   <body>
+  <canvas id="c" width="700" height="700"></canvas>
+    <div class="controls">
+  <p>
+    <label><span>Angle:</span> <input type="range" id="angle-control" value="0" min="-90" max="90"></label>
+  </p>
+  <p>
+    <label><span>Left:</span> <input type="range" id="left-control" value="150" min="0" max="300"></label>
+  </p>
+  <p>
+    <label><span>Top:</span> <input type="range" id="top-control" value="150" min="0" max="300"></label>
+  </p>
+  <p>
+    <label><span>Scale:</span> <input type="range" id="scale-control" value="1" min="0.1" max="3" step="0.1"></label>
+  </p>
+</div>
     <div class="container">
       <header class="clearfix">
         <h1>
@@ -70,13 +95,14 @@
           <section id="section-1">
             <div class="mediabox">
               <?php
-               include 'db_connect.php';
                $result = mysql_query("SELECT * FROM dresses WHERE dress_category=1");
                while ($row = mysql_fetch_array($result)) {
-               $path = $row{'dress_name'}.".png";
-               echo "<img src = 'dresses/$path'/><br>";
+               $path = "dresses/".$row{'dress_name'}.".png";
+               ?>
+		<a href="#" onclick="document.form_name.image_name.value = '<?echo $path;?>';
+		 document.form_name.submit(); return false;"><img src = "<?echo $path;?>"></a><br>
+		<?php
                }
-               mysql_close($dbhandle);
              ?>    
             </div>                                
           </section>
@@ -84,54 +110,114 @@
           <section id="section-2">
             <div class="mediabox">              
                <?php
-                include 'db_connect.php';
                 $result = mysql_query("SELECT * FROM dresses WHERE dress_category=2");
                 while ($row = mysql_fetch_array($result)) {
-                $path = $row{'dress_name'}.".png";
-                echo "<img src = 'dresses/$path'/><br>";
+		$path = "dresses/".$row{'dress_name'}.".png";
+		?>
+		<a href="#" onclick="document.form_name.image_name.value = '<?echo $path;?>';
+		 document.form_name.submit(); return false;"><img src = "<?echo $path;?>"></a><br>
+		<?php
                 }
-                mysql_close($dbhandle);
-                ?>                     
+                ?>                        
              </div>
           </section>
 
             <section id="section-3">
               <div class="mediabox">                                
                  <?php
-                  include 'db_connect.php';
                   $result = mysql_query("SELECT * FROM dresses WHERE dress_category=3");
                   while ($row = mysql_fetch_array($result)) {
-                  $path = $row{'dress_name'}.".png";
-                  echo "<img src = 'dresses/$path'/><br>";
+                  $path = "dresses/".$row{'dress_name'}.".png";
+                  ?>
+		<a href="#" onclick="document.form_name.image_name.value = '<?echo $path;?>';
+		 document.form_name.submit(); return false;"><img src = "<?echo $path;?>"></a><br>
+		<?php
                   }
-                  mysql_close($dbhandle);
-                 ?>                                              
+                 ?>                                                 
                </div>
              </section>
                       
              <section id="section-4">
                <div class="mediabox">          
                   <?php
-                   include 'db_connect.php';
                    $result = mysql_query("SELECT * FROM dresses WHERE dress_category=4");
                    while ($row = mysql_fetch_array($result)) {
-                   $path = $row{'dress_name'}.".png";
-                   echo "<img src = 'dresses/$path'/><br>";
+                   $path = "dresses/".$row{'dress_name'}.".png";
+                   ?>
+		<a href="#" onclick="document.form_name.image_name.value = '<?echo $path;?>';
+		 document.form_name.submit(); return false;"><img src = "<?echo $path;?>"></a><br>
+		<?php
                    }
-                  mysql_close($dbhandle);
-                  ?>                                                 
+                  ?>                                                  
                </div>
              </section>
                       
         </div><!-- /content -->
     </div><!-- /tabs -->
     </div>
+    <form id="form_name" name="form_name" action="dress_viewer.php" method="post">
+      <input type="hidden" id="image_name" name="image_name" value="" />
+    </form>
     <script src = "tab.js">
     </script>
     <script>
       new CBPFWTabs( document.getElementById( 'tabs' ) );
     </script>
-    
+    <script>
+    (function() {
+  var canvas = this.__canvas = new fabric.Canvas('c');
+  fabric.Object.prototype.transparentCorners = false;
+
+  var $ = function(id){return document.getElementById(id)};
+
+  fabric.Image.fromURL('<?php echo $addr;?>', function(oImg) {
+     oImg.set({
+	top: 100,
+    	left: 100,
+	});
+  canvas.add(oImg);
+
+  var angleControl = $('angle-control');
+  angleControl.onchange = function() {
+    oImg.setAngle(parseInt(this.value, 10)).setCoords();
+    canvas.renderAll();
+  };
+
+  var scaleControl = $('scale-control');
+  scaleControl.onchange = function() {
+    oImg.scale(parseFloat(this.value)).setCoords();
+    canvas.renderAll();
+  };
+
+  var topControl = $('top-control');
+  topControl.onchange = function() {
+    oImg.setTop(parseInt(this.value, 10)).setCoords();
+    canvas.renderAll();
+  };
+
+  var leftControl = $('left-control');
+  leftControl.onchange = function() {
+    oImg.setLeft(parseInt(this.value, 10)).setCoords();
+    canvas.renderAll();
+  };
+
+  function updateControls() {
+    scaleControl.value = oImg.getScaleX();
+    angleControl.value = oImg.getAngle();
+    leftControl.value = oImg.getLeft();
+    topControl.value = oImg.getTop();
+  }
+  canvas.on({
+    'object:moving': updateControls,
+    'object:scaling': updateControls,
+    'object:resizing': updateControls,
+    'object:rotating': updateControls
+  });
+});})();
+</script>
     
     </body>
   </html>
+<?php
+ mysql_close($dbhandle);
+?>
