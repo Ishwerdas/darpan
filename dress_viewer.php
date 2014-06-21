@@ -1,7 +1,5 @@
 <?php
   include 'db_connect.php';
-  $addr = $_POST['image_name'];
-  
 ?>
 <!DOCTYPE html>
 <html>
@@ -99,8 +97,7 @@
                while ($row = mysql_fetch_array($result)) {
                $path = "dresses/".$row{'dress_name'}.".png";
                ?>
-		<a href="#" onclick="document.form_name.image_name.value = '<?echo $path;?>';
-		 document.form_name.submit(); return false;"><img src = "<?echo $path;?>"></a><br>
+		<img onclick="drawCanvas('<?echo $path;?>');" src ="<?echo $path;?>"><br>
 		<?php
                }
              ?>    
@@ -114,8 +111,7 @@
                 while ($row = mysql_fetch_array($result)) {
 		$path = "dresses/".$row{'dress_name'}.".png";
 		?>
-		<a href="#" onclick="document.form_name.image_name.value = '<?echo $path;?>';
-		 document.form_name.submit(); return false;"><img src = "<?echo $path;?>"></a><br>
+		<img onclick="drawCanvas('<?echo $path;?>');" src ="<?echo $path;?>"><br>
 		<?php
                 }
                 ?>                        
@@ -129,8 +125,7 @@
                   while ($row = mysql_fetch_array($result)) {
                   $path = "dresses/".$row{'dress_name'}.".png";
                   ?>
-		<a href="#" onclick="document.form_name.image_name.value = '<?echo $path;?>';
-		 document.form_name.submit(); return false;"><img src = "<?echo $path;?>"></a><br>
+		<img onclick="drawCanvas('<?echo $path;?>');" src ="<?echo $path;?>"><br>
 		<?php
                   }
                  ?>                                                 
@@ -144,8 +139,7 @@
                    while ($row = mysql_fetch_array($result)) {
                    $path = "dresses/".$row{'dress_name'}.".png";
                    ?>
-		<a href="#" onclick="document.form_name.image_name.value = '<?echo $path;?>';
-		 document.form_name.submit(); return false;"><img src = "<?echo $path;?>"></a><br>
+		<img onclick="drawCanvas('<?echo $path;?>');" src ="<?echo $path;?>"><br>
 		<?php
                    }
                   ?>                                                  
@@ -155,22 +149,19 @@
         </div><!-- /content -->
     </div><!-- /tabs -->
     </div>
-    <form id="form_name" name="form_name" action="dress_viewer.php" method="post">
-      <input type="hidden" id="image_name" name="image_name" value="" />
-    </form>
     <script src = "tab.js">
     </script>
     <script>
       new CBPFWTabs( document.getElementById( 'tabs' ) );
     </script>
     <script>
-    (function() {
+    function drawCanvas(path) {
   var canvas = this.__canvas = new fabric.Canvas('c');
   fabric.Object.prototype.transparentCorners = false;
 
   var $ = function(id){return document.getElementById(id)};
 
-  fabric.Image.fromURL('<?php echo $addr;?>', function(oImg) {
+  fabric.Image.fromURL(path, function(oImg) {
      oImg.set({
 	top: 100,
     	left: 100,
@@ -213,7 +204,7 @@
     'object:resizing': updateControls,
     'object:rotating': updateControls
   });
-});})();
+});};
 </script>
     
     </body>
