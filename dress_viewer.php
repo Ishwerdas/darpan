@@ -97,7 +97,7 @@
                while ($row = mysql_fetch_array($result)) {
                $path = "dresses/".$row{'dress_name'}.".png";
                ?>
-		<img onclick="drawCanvas('<?echo $path;?>');" src ="<?echo $path;?>"><br>
+		<img onclick="drawCanvas('<?php echo $path;?>');" src ="<?echo $path;?>"><br>
 		<?php
                }
              ?>    
@@ -111,7 +111,7 @@
                 while ($row = mysql_fetch_array($result)) {
 		$path = "dresses/".$row{'dress_name'}.".png";
 		?>
-		<img onclick="drawCanvas('<?echo $path;?>');" src ="<?echo $path;?>"><br>
+		<img onclick="drawCanvas('<?php echo $path;?>');" src ="<?echo $path;?>"><br>
 		<?php
                 }
                 ?>                        
@@ -125,7 +125,7 @@
                   while ($row = mysql_fetch_array($result)) {
                   $path = "dresses/".$row{'dress_name'}.".png";
                   ?>
-		<img onclick="drawCanvas('<?echo $path;?>');" src ="<?echo $path;?>"><br>
+		<img onclick="drawCanvas('<?php echo $path;?>');" src ="<?echo $path;?>"><br>
 		<?php
                   }
                  ?>                                                 
@@ -139,7 +139,7 @@
                    while ($row = mysql_fetch_array($result)) {
                    $path = "dresses/".$row{'dress_name'}.".png";
                    ?>
-		<img onclick="drawCanvas('<?echo $path;?>');" src ="<?echo $path;?>"><br>
+		<img onclick="drawCanvas('<?php echo $path;?>');" src ="<?echo $path;?>"><br>
 		<?php
                    }
                   ?>                                                  
