@@ -7,7 +7,8 @@
     <meta charset="UTF-8" />
     <link rel="stylesheet" type="text/css" href="tabs.css" />
     <link rel="stylesheet" type="text/css" href="heading.css" />
-    <script src="fabric.min.js"></script>
+   
+ <script src="fabric.min.js"></script>
     <script type="text/javascript">
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-7243260-2']);
@@ -35,7 +36,54 @@
   
   <body>
   <canvas id="c" width="700" height="700"></canvas>
+  <!-- file upload form -->
+<p><strong>File upload:</strong></p>
+
+<form method="post" enctype="multipart/form-data">
+	<label for="file">Filename:</label>
+	<input type="file" name="file" id="file"><br>
+	<input type="submit" name="submit" value="Upload">
+</form>
+
+<div>
+<?php
+$uploaddir = 'customer/';
+
+ if ($_POST['submit'])
+{
+ if ($_FILES["file"]["error"] > 0) {
+    echo "Return Code: " . $_FILES["file"]["error"] . "<br>";
+  }
+  else {
+    if (file_exists($uploaddir . $_FILES["file"]["name"])) {
+      echo $_FILES["file"]["name"] . " already exists. ";
+    }
+    else {
+      move_uploaded_file($_FILES["file"]["tmp_name"],
+      $uploaddir . $_FILES["file"]["name"]);
+      echo " and file has been Uploaded to: " . $uploaddir;
+    }
+  }
+
+?>
+
+<script type="text/javascript">
+var pathtoimage = '<?php echo $uploaddir. "1.png" ?>';
+var canvas = this.__canvas = new fabric.Canvas('c');
+
+canvas.setBackgroundImage(pathtoimage, canvas.renderAll.bind(canvas), {
+  // Needed to position backgroundImage at 0/0
+  originX: 'left',
+  originY: 'top'
+});
+canvas.add(pathtoimage);
+
+</script>
+<?php
+}
+?>
     <div class="controls">
+
   <p>
     <label><span>Angle:</span> <input type="range" id="angle-control" value="0" min="-90" max="90"></label>
   </p>
@@ -155,12 +203,27 @@
       new CBPFWTabs( document.getElementById( 'tabs' ) );
     </script>
     <script>
+
+function drawImage(){
+  
+var canvas = this.__canvas = new fabric.Canvas('c');
+var image = document.getElementById("file");
+
+canvas.setBackgroundImage(image, canvas.renderAll.bind(canvas), {
+  // Needed to position backgroundImage at 0/0
+  originX: 'left',
+  originY: 'top'
+});
+canvas.add(image);
+};
     function drawCanvas(path) {
+
+
   var canvas = this.__canvas = new fabric.Canvas('c');
   fabric.Object.prototype.transparentCorners = false;
 
   var $ = function(id){return document.getElementById(id)};
-
+    
   fabric.Image.fromURL(path, function(oImg) {
      oImg.set({
 	top: 100,
