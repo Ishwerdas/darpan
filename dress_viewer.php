@@ -1,14 +1,15 @@
 <?php
   include 'db_connect.php';
+  $name=$_FILES["file"]["name"];
 ?>
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="UTF-8" />
-    <link rel="stylesheet" type="text/css" href="tabs.css" />
-    <link rel="stylesheet" type="text/css" href="heading.css" />
+    <link rel="stylesheet" type="text/css" href="css/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="css/heading.css" />
    
- <script src="fabric.min.js"></script>
+ <script src="js/fabric.min.js"></script>
     <script type="text/javascript">
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-7243260-2']);
@@ -23,30 +24,99 @@
       }
       )();
    </script>
-   <style>
-  .controls { display: inline-block; background: #fafafa; margin-left: 10px; padding: 15px; border-left: 1px dotted #aaa; height: 270px }
-  .canvas-container { display: inline-block; vertical-align: top; }
-  canvas { border: 1px solid #eee !important }
-  label span { width: 50px; display: inline-block }
-  *[type=range] { position: relative; top: 4px }
-  p:first-child { margin-top: 0 }
-  p:last-child { margin-bottom: 0 }
-</style>
+    
   </head>
   
   <body>
-  <canvas id="c" width="700" height="700"></canvas>
+  <div id="container1">
+  <canvas id="c" width="700" height="700" style="border: 1px solid black";></canvas>
   <!-- file upload form -->
 <p><strong>File upload:</strong></p>
 
+<menu id="control">
 <form method="post" enctype="multipart/form-data">
 	<label for="file">Filename:</label>
 	<input type="file" name="file" id="file"><br>
 	<input type="submit" name="submit" value="Upload">
 </form>
+</menu>
+</div>
+
+<script type="text/javascript">
+      
+      canvas = this.__canvas = new fabric.Canvas('c');
+   
+      function setBG(name) {
+     
+     // var img = '<?php echo $name; ?>';
+      var pathtoimage = "customer/"+"<?php echo $name; ?>";
+      canvas.setBackgroundImage(pathtoimage, canvas.renderAll.bind(canvas), {
+        // Needed to position backgroundImage at 0/0
+        originX: 'left',
+        originY: 'top'
+      });
+      canvas.add(pathtoimage);
+    };
+
+    function drawCanvas(path) {
+
+var $ = function(id){return document.getElementById(id)};
+//  var canvas = this.__canvas = new fabric.Canvas('c');
+    
+  fabric.Image.fromURL(path, function(oImg) {
+     oImg.set({
+  top: 100,
+      left: 100,
+  });
+ // canvas.setBackgroundImage('customer/1.png', canvas.renderAll.bind(canvas));                
+  canvas.add(oImg);
+  canvas.bringForward(oImg);
+
+  var angleControl = $('angle-control');
+  angleControl.onchange = function() {
+    oImg.setAngle(parseInt(this.value, 10)).setCoords();
+    canvas.renderAll();
+  };
+
+  var scaleControl = $('scale-control');
+  scaleControl.onchange = function() {
+    oImg.scale(parseFloat(this.value)).setCoords();
+    canvas.renderAll();
+  };
+
+  var topControl = $('top-control');
+  topControl.onchange = function() {
+    oImg.setTop(parseInt(this.value, 10)).setCoords();
+    canvas.renderAll();
+  };
+
+  var leftControl = $('left-control');
+  leftControl.onchange = function() {
+    oImg.setLeft(parseInt(this.value, 10)).setCoords();
+    canvas.renderAll();
+  };
+
+  function updateControls() {
+    scaleControl.value = oImg.getScaleX();
+    angleControl.value = oImg.getAngle();
+    leftControl.value = oImg.getLeft();
+    topControl.value = oImg.getTop();
+  }
+  canvas.on({
+    'object:moving': updateControls,
+    'object:scaling': updateControls,
+    'object:resizing': updateControls,
+    'object:rotating': updateControls
+  });
+});};
+
+</script>
+
+
 
 <div>
 <?php
+
 $uploaddir = 'customer/';
 
  if ($_POST['submit'])
@@ -64,11 +134,10 @@ $uploaddir = 'customer/';
       echo " and file has been Uploaded to: " . $uploaddir;
     }
   }
-
 ?>
 
-<script type="text/javascript">
-var pathtoimage = '<?php echo $uploaddir. "1.png" ?>';
+<!--<script type="text/javascript">
+var pathtoimage = '<?php // echo $uploaddir. "1.png" ?>';
 var canvas = this.__canvas = new fabric.Canvas('c');
 
 canvas.setBackgroundImage(pathtoimage, canvas.renderAll.bind(canvas), {
@@ -78,10 +147,14 @@ canvas.setBackgroundImage(pathtoimage, canvas.renderAll.bind(canvas), {
 });
 canvas.add(pathtoimage);
 
-</script>
+</script>-->
 <?php
+
 }
+echo '<script type="text/javascript"> setBG(name); </script>';
 ?>
+</div>
+
     <div class="controls">
 
   <p>
@@ -145,7 +218,7 @@ canvas.add(pathtoimage);
                while ($row = mysql_fetch_array($result)) {
                $path = "dresses/".$row{'dress_name'}.".png";
                ?>
-		<img onclick="drawCanvas('<?php echo $path;?>');" src ="<?echo $path;?>"><br>
+		<img onclick="drawCanvas('<?php echo $path;?>');" src ="<?php echo $path;?>"><br>
 		<?php
                }
              ?>    
@@ -159,7 +232,7 @@ canvas.add(pathtoimage);
                 while ($row = mysql_fetch_array($result)) {
 		$path = "dresses/".$row{'dress_name'}.".png";
 		?>
-		<img onclick="drawCanvas('<?php echo $path;?>');" src ="<?echo $path;?>"><br>
+		<img onclick="drawCanvas('<?php echo $path;?>');" src ="<?php echo $path;?>"><br>
 		<?php
                 }
                 ?>                        
@@ -173,7 +246,7 @@ canvas.add(pathtoimage);
                   while ($row = mysql_fetch_array($result)) {
                   $path = "dresses/".$row{'dress_name'}.".png";
                   ?>
-		<img onclick="drawCanvas('<?php echo $path;?>');" src ="<?echo $path;?>"><br>
+		<img onclick="drawCanvas('<?php echo $path;?>');" src ="<?php echo $path;?>"><br>
 		<?php
                   }
                  ?>                                                 
@@ -187,7 +260,7 @@ canvas.add(pathtoimage);
                    while ($row = mysql_fetch_array($result)) {
                    $path = "dresses/".$row{'dress_name'}.".png";
                    ?>
-		<img onclick="drawCanvas('<?php echo $path;?>');" src ="<?echo $path;?>"><br>
+		<img onclick="drawCanvas('<?php echo $path;?>');" src ="<?php echo $path;?>"><br>
 		<?php
                    }
                   ?>                                                  
@@ -197,26 +270,15 @@ canvas.add(pathtoimage);
         </div><!-- /content -->
     </div><!-- /tabs -->
     </div>
-    <script src = "tab.js">
+    <script src = "js/tab.js">
     </script>
     <script>
       new CBPFWTabs( document.getElementById( 'tabs' ) );
     </script>
     <script>
 
-function drawImage(){
-  
-var canvas = this.__canvas = new fabric.Canvas('c');
-var image = document.getElementById("file");
 
-canvas.setBackgroundImage(image, canvas.renderAll.bind(canvas), {
-  // Needed to position backgroundImage at 0/0
-  originX: 'left',
-  originY: 'top'
-});
-canvas.add(image);
-};
-    function drawCanvas(path) {
+  /*  function drawCanvas(path) {
 
 
   var canvas = this.__canvas = new fabric.Canvas('c');
@@ -229,7 +291,9 @@ canvas.add(image);
 	top: 100,
     	left: 100,
 	});
+  canvas.setBackgroundImage('customer/1.png', canvas.renderAll.bind(canvas));                
   canvas.add(oImg);
+
 
   var angleControl = $('angle-control');
   angleControl.onchange = function() {
@@ -267,7 +331,7 @@ canvas.add(image);
     'object:resizing': updateControls,
     'object:rotating': updateControls
   });
-});};
+});};*/
 </script>
     
     </body>
